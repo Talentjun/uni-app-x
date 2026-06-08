@@ -2,7 +2,28 @@
 	<view class="container">
 		<image class="logo" src="/static/logo.png"></image>
 		<text class="title">{{title}}</text>
-		<view class="env-info">Mode: {{ isDev() ? 'Development' : 'Production' }}</view>
+
+		<view class="precision-box">
+			<text class="box-title">精度计算演示 (number-precision)</text>
+			<text class="precision-item">0.1 + 0.2 = {{ result1 }}</text>
+			<text class="precision-item">1.005 * 100 = {{ result2 }}</text>
+			<text class="precision-item">0.3 - 0.1 = {{ result3 }}</text>
+		</view>
+
+		<view class="list-box">
+			<text class="list-title">文章列表</text>
+			<view v-if="loading" class="loading">
+				<text>加载中...</text>
+			</view>
+			<view v-else-if="posts.length === 0" class="empty">
+				<text>暂无数据</text>
+			</view>
+			<view v-else class="post-item" v-for="(item, index) in posts" :key="index">
+				<text class="post-title">{{ item.title }}</text>
+				<text class="post-body">{{ item.body }}</text>
+			</view>
+		</view>
+
 		<view class="counter-box">
 			<text class="counter-text">Count: {{ counter.count }}</text>
 			<text class="counter-text">Double: {{ counter.doubleCount }}</text>
@@ -17,10 +38,36 @@
 
 <script setup lang="uts">
 	import { useCounterStore } from '@/stores/counter'
-	import { isDev, isProd } from '@/utils/env.uts'
+	import { getHomeData } from '@/utils/home'
+	import NP from 'number-precision'
 
 	const title = ref('Hello')
 	const counter = useCounterStore()
+	const loading = ref(true)
+	const posts = ref([])
+
+	// 精度计算示例
+	const result1 = ref(NP.plus(0.1, 0.2))       // 0.3（原生会得到 0.30000000000000004）
+	const result2 = ref(NP.times(1.005, 100))     // 100.5（原生会得到 100.49999999999999）
+	const result3 = ref(NP.minus(0.3, 0.1))       // 0.2（原生会得到 0.19999999999999998）
+
+	// 获取首页数据
+	const fetchData = async () => {
+		try {
+			loading.value = true
+			const res = await getHomeData()
+			posts.value = res || []
+		} catch (error) {
+			console.error('获取数据失败:', error)
+		} finally {
+			loading.value = false
+		}
+	}
+
+	// 页面加载时获取数据
+	onMounted(() => {
+		fetchData()
+	})
 </script>
 
 <style>
@@ -44,10 +91,67 @@
 		margin-bottom: 30px;
 	}
 
-	.env-info {
-		font-size: 20px;
+	.precision-box {
+		width: 90%;
+		background-color: #e8f5e9;
+		border-radius: 10px;
+		padding: 15px;
+		margin-bottom: 20px;
+	}
+
+	.box-title {
+		font-size: 16px;
+		font-weight: bold;
+		color: #2e7d32;
+		margin-bottom: 10px;
+	}
+
+	.precision-item {
+		font-size: 14px;
+		color: #333333;
+		margin-bottom: 8px;
+	}
+
+	.list-box {
+		width: 90%;
+		background-color: #ffffff;
+		border-radius: 10px;
+		padding: 15px;
+		margin-bottom: 20px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.list-title {
+		font-size: 18px;
+		font-weight: bold;
+		color: #333333;
+		margin-bottom: 15px;
+	}
+
+	.loading, .empty {
+		padding: 20px;
+		text-align: center;
+		color: #999999;
+	}
+
+	.post-item {
+		padding: 12px 0;
+		border-bottom-width: 1px;
+		border-bottom-color: #eeeeee;
+	}
+
+	.post-title {
+		font-size: 16px;
+		font-weight: bold;
+		color: #333333;
+		margin-bottom: 8px;
+	}
+
+	.post-body {
+		font-size: 14px;
 		color: #666666;
-		margin-bottom: 4px;
+		lines: 2;
+		text-overflow: ellipsis;
 	}
 
 	.counter-box {

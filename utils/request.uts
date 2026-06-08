@@ -1,0 +1,133 @@
+// 请求封装 - 使用 uni.request
+
+// API 基础地址
+import { getBaseUrl } from './env.uts'
+const BASE_URL = getBaseUrl()
+
+// 请求拦截：添加 token
+function getToken(): string {
+  return uni.getStorageSync('token') || ''
+}
+
+// 封装 GET 请求
+export function get(url: string, params?: Record<string, any>): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // 拼接参数
+    let fullUrl = BASE_URL + url
+    if (params) {
+      const query = Object.keys(params)
+        .map(key => `${key}=${encodeURIComponent(params[key])}`)
+        .join('&')
+      fullUrl += '?' + query
+    }
+
+    uni.request({
+      url: fullUrl,
+      method: 'GET',
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+      },
+      success: (res) => {
+        if (res.statusCode === 200) {
+          resolve(res.data)
+        } else {
+          uni.showToast({ title: '请求失败', icon: 'none' })
+          reject(new Error('请求失败'))
+        }
+      },
+      fail: (err) => {
+        uni.showToast({ title: '网络连接失败', icon: 'none' })
+        reject(err)
+      }
+    })
+  })
+}
+
+// 封装 POST 请求
+export function post(url: string, data?: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    uni.request({
+      url: BASE_URL + url,
+      method: 'POST',
+      data: data,
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+      },
+      success: (res) => {
+        if (res.statusCode === 200 || res.statusCode === 201) {
+          resolve(res.data)
+        } else {
+          uni.showToast({ title: '请求失败', icon: 'none' })
+          reject(new Error('请求失败'))
+        }
+      },
+      fail: (err) => {
+        uni.showToast({ title: '网络连接失败', icon: 'none' })
+        reject(err)
+      }
+    })
+  })
+}
+
+// 封装 PUT 请求
+export function put(url: string, data?: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    uni.request({
+      url: BASE_URL + url,
+      method: 'PUT',
+      data: data,
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+      },
+      success: (res) => {
+        if (res.statusCode === 200) {
+          resolve(res.data)
+        } else {
+          uni.showToast({ title: '请求失败', icon: 'none' })
+          reject(new Error('请求失败'))
+        }
+      },
+      fail: (err) => {
+        uni.showToast({ title: '网络连接失败', icon: 'none' })
+        reject(err)
+      }
+    })
+  })
+}
+
+// 封装 DELETE 请求
+export function del(url: string, params?: Record<string, any>): Promise<any> {
+  return new Promise((resolve, reject) => {
+    let fullUrl = BASE_URL + url
+    if (params) {
+      const query = Object.keys(params)
+        .map(key => `${key}=${encodeURIComponent(params[key])}`)
+        .join('&')
+      fullUrl += '?' + query
+    }
+
+    uni.request({
+      url: fullUrl,
+      method: 'DELETE',
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+      },
+      success: (res) => {
+        if (res.statusCode === 200) {
+          resolve(res.data)
+        } else {
+          uni.showToast({ title: '请求失败', icon: 'none' })
+          reject(new Error('请求失败'))
+        }
+      },
+      fail: (err) => {
+        uni.showToast({ title: '网络连接失败', icon: 'none' })
+        reject(err)
+      }
+    })
+  })
+}
