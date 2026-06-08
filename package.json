@@ -1,0 +1,22 @@
+{
+  "name": "uni-app-x",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.2",
+  "dependencies": {
+    "pinia": "^3.0.4"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-app-plus": "2.0.2-5000720260410001",
+    "@dcloudio/uni-cli-shared": "2.0.2-5000720260410001",
+    "@dcloudio/uni-stacktracey": "2.0.2-5000720260410001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-3000020210521001"
+  }
+}
