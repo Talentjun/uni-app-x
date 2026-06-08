@@ -2,12 +2,6 @@
 	<view class="container">
 		<image class="logo" src="/static/logo.png"></image>
 		<text class="title">{{title}}</text>
-		<view class="env-box">
-			<text class="env-tag" :class="isDev ? 'env-dev' : 'env-prod'">
-				{{ isDev ? '开发环境' : '生产环境' }}
-			</text>
-			<text class="env-url">API: {{ apiBaseUrl }}</text>
-		</view>
 		<view class="counter-box">
 			<text class="counter-text">Count: {{ counter.count }}</text>
 			<text class="counter-text">Double: {{ counter.doubleCount }}</text>
@@ -22,11 +16,9 @@
 
 <script setup lang="uts">
 	import { useCounterStore } from '@/stores/counter'
-	import { isDev, API_BASE_URL } from '@/utils/env'
 
 	const title = ref('Hello')
 	const counter = useCounterStore()
-	const apiBaseUrl = ref(API_BASE_URL)
 </script>
 
 <style>
@@ -82,33 +74,5 @@
 		color: #ffffff;
 		border-radius: 5px;
 		font-size: 16px;
-	}
-
-	.env-box {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		margin-bottom: 20px;
-	}
-
-	.env-tag {
-		padding: 6px 16px;
-		border-radius: 4px;
-		font-size: 14px;
-		color: #ffffff;
-		margin-bottom: 8px;
-	}
-
-	.env-dev {
-		background-color: #28a745;
-	}
-
-	.env-prod {
-		background-color: #dc3545;
-	}
-
-	.env-url {
-		font-size: 12px;
-		color: #666666;
 	}
 </style>
