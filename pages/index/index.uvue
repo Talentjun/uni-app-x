@@ -2,6 +2,7 @@
 	<view class="container">
 		<image class="logo" src="/static/logo.png"></image>
 		<text class="title">{{title}}</text>
+		<view class="env-info">Mode: {{ isDev() ? 'Development' : 'Production' }}</view>
 		<view class="counter-box">
 			<text class="counter-text">Count: {{ counter.count }}</text>
 			<text class="counter-text">Double: {{ counter.doubleCount }}</text>
@@ -16,6 +17,7 @@
 
 <script setup lang="uts">
 	import { useCounterStore } from '@/stores/counter'
+	import { isDev, isProd } from '@/utils/env.uts'
 
 	const title = ref('Hello')
 	const counter = useCounterStore()
@@ -40,6 +42,12 @@
 		color: #8f8f94;
 		text-align: center;
 		margin-bottom: 30px;
+	}
+
+	.env-info {
+		font-size: 20px;
+		color: #666666;
+		margin-bottom: 4px;
 	}
 
 	.counter-box {
