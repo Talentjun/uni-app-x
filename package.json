@@ -1,7 +1,7 @@
 {
   "name": "uni-app-x",
   "version": "1.0.0",
-  "description": "",
+  "description": "基于 uni-app-x 框架的跨端应用",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
