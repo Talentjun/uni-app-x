@@ -1,0 +1,18 @@
+workflow: full
+phase: archive
+build_mode: subagent-driven-development
+build_pause: null
+isolation: branch
+verify_mode: full
+base_ref: 9ab847c15d499333681851615f596cf0442159fe
+design_doc: docs/superpowers/specs/2026-06-09-detail-page-data-design.md
+plan: docs/superpowers/plans/2026-06-09-detail-page-data.md
+verify_result: pass
+verification_report: docs/superpowers/reports/2026-06-09-detail-page-data-verify.md
+branch_status: handled
+created_at: 2026-06-09
+verified_at: 2026-06-09
+archived: true
+handoff_context: openspec/changes/detail-page-data/.comet/handoff/design-context.json
+handoff_hash: e2230131c00e74552d08e90646c5d74ca5ee4713541b7ff994f91f367ec9630f
+build_command: echo 'No build script available'

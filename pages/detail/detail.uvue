@@ -1,14 +1,52 @@
 <template>
   <view class="container">
-    <text class="title">详情页</text>
-    <view class="content">
-      <text class="text">这是详情页面</text>
+    <view v-if="loading" class="loading">
+      <text>加载中...</text>
+    </view>
+    <view v-else-if="article" class="content">
+      <text class="id">ID: {{ article.id }}</text>
+      <text class="userId">用户ID: {{ article.userId }}</text>
+      <text class="title">{{ article.title }}</text>
+      <text class="body">{{ article.body }}</text>
+    </view>
+    <view v-else class="empty">
+      <text>暂无数据</text>
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
+import { getHomeData } from '@/utils/home'
+
 const title = ref('详情页')
+const article = ref<any>(null)
+const loading = ref(true)
+
+// 获取文章详情
+const fetchData = async (id: number) => {
+  try {
+    loading.value = true
+    const res = await getHomeData()
+    const posts = res || []
+    article.value = posts.find((item: any) => item.id === id)
+  } catch (error) {
+    console.error('获取数据失败:', error)
+    uni.showToast({ title: '获取数据失败', icon: 'none' })
+  } finally {
+    loading.value = false
+  }
+}
+
+// 页面加载时获取参数并请求数据
+onLoad((options) => {
+  const id = options?.id
+  if (id) {
+    fetchData(Number(id))
+  } else {
+    loading.value = false
+    console.error('缺少文章 ID 参数')
+  }
+})
 </script>
 
 <style>
@@ -19,11 +57,9 @@ const title = ref('详情页')
   padding: 20px;
 }
 
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333333;
-  margin-bottom: 20px;
+.loading {
+  padding: 20px;
+  text-align: center;
 }
 
 .content {
@@ -34,8 +70,33 @@ const title = ref('详情页')
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.text {
+.id {
+  font-size: 14px;
+  color: #999999;
+  margin-bottom: 10px;
+}
+
+.userId {
+  font-size: 14px;
+  color: #999999;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 15px;
+}
+
+.body {
   font-size: 16px;
   color: #666666;
+  line-height: 1.6;
+}
+
+.empty {
+  padding: 20px;
+  text-align: center;
 }
 </style>

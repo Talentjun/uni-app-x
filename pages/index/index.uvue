@@ -24,6 +24,7 @@
         class="post-item"
         v-for="(item, index) in posts"
         :key="index"
+        @click="goToDetail(item.id)"
       >
         <text class="post-title">{{ item.title }}</text>
         <text class="post-body">{{ item.body }}</text>
@@ -69,6 +70,13 @@ const fetchData = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// 跳转到详情页
+const goToDetail = (id: number) => {
+  uni.navigateTo({
+    url: `/pages/detail/detail?id=${id}`,
+  })
 }
 
 // 页面加载时获取数据
