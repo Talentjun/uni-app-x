@@ -38,12 +38,6 @@
         "selectedIconPath": "static/tabbar/home.png"
       },
       {
-        "pagePath": "pages/detail/detail",
-        "text": "详情",
-        "iconPath": "static/tabbar/detail.png",
-        "selectedIconPath": "static/tabbar/detail.png"
-      },
-      {
         "pagePath": "pages/mine/mine",
         "text": "我的",
         "iconPath": "static/tabbar/mine.png",
