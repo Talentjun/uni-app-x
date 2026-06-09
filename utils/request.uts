@@ -16,7 +16,7 @@ export function get(url: string, params?: Record<string, any>): Promise<any> {
     let fullUrl = BASE_URL + url
     if (params) {
       const query = Object.keys(params)
-        .map(key => `${key}=${encodeURIComponent(params[key])}`)
+        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
         .join('&')
       fullUrl += '?' + query
     }
@@ -26,7 +26,7 @@ export function get(url: string, params?: Record<string, any>): Promise<any> {
       method: 'GET',
       header: {
         'Content-Type': 'application/json',
-        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+        Authorization: getToken() ? `Bearer ${getToken()}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200) {
@@ -39,7 +39,7 @@ export function get(url: string, params?: Record<string, any>): Promise<any> {
       fail: (err) => {
         uni.showToast({ title: '网络连接失败', icon: 'none' })
         reject(err)
-      }
+      },
     })
   })
 }
@@ -53,7 +53,7 @@ export function post(url: string, data?: any): Promise<any> {
       data: data,
       header: {
         'Content-Type': 'application/json',
-        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+        Authorization: getToken() ? `Bearer ${getToken()}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200 || res.statusCode === 201) {
@@ -66,7 +66,7 @@ export function post(url: string, data?: any): Promise<any> {
       fail: (err) => {
         uni.showToast({ title: '网络连接失败', icon: 'none' })
         reject(err)
-      }
+      },
     })
   })
 }
@@ -80,7 +80,7 @@ export function put(url: string, data?: any): Promise<any> {
       data: data,
       header: {
         'Content-Type': 'application/json',
-        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+        Authorization: getToken() ? `Bearer ${getToken()}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200) {
@@ -93,7 +93,7 @@ export function put(url: string, data?: any): Promise<any> {
       fail: (err) => {
         uni.showToast({ title: '网络连接失败', icon: 'none' })
         reject(err)
-      }
+      },
     })
   })
 }
@@ -104,7 +104,7 @@ export function del(url: string, params?: Record<string, any>): Promise<any> {
     let fullUrl = BASE_URL + url
     if (params) {
       const query = Object.keys(params)
-        .map(key => `${key}=${encodeURIComponent(params[key])}`)
+        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
         .join('&')
       fullUrl += '?' + query
     }
@@ -114,7 +114,7 @@ export function del(url: string, params?: Record<string, any>): Promise<any> {
       method: 'DELETE',
       header: {
         'Content-Type': 'application/json',
-        'Authorization': getToken() ? `Bearer ${getToken()}` : ''
+        Authorization: getToken() ? `Bearer ${getToken()}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200) {
@@ -127,7 +127,7 @@ export function del(url: string, params?: Record<string, any>): Promise<any> {
       fail: (err) => {
         uni.showToast({ title: '网络连接失败', icon: 'none' })
         reject(err)
-      }
+      },
     })
   })
 }

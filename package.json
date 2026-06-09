@@ -4,7 +4,9 @@
   "description": "基于 uni-app-x 框架的跨端应用",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -18,6 +20,12 @@
     "@dcloudio/uni-app-plus": "2.0.2-5000720260410001",
     "@dcloudio/uni-cli-shared": "2.0.2-5000720260410001",
     "@dcloudio/uni-stacktracey": "2.0.2-5000720260410001",
-    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-3000020210521001"
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-3000020210521001",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "prettier": "^3.8.3"
+  },
+  "lint-staged": {
+    "*.{uvue,uts,ts,js,json,css,scss,vue,html,md}": "prettier --write"
   }
 }

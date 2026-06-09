@@ -52,11 +52,11 @@ uni-app-x/
 
 ### 页面说明
 
-| 页面 | 路径 | 功能 |
-|------|------|------|
-| 首页 | pages/index/index | 数据列表展示、Pinia 使用示例 |
-| 详情页 | pages/detail/detail | 详情内容展示 |
-| 我的 | pages/mine/mine | 个人中心、菜单列表 |
+| 页面   | 路径                | 功能                         |
+| ------ | ------------------- | ---------------------------- |
+| 首页   | pages/index/index   | 数据列表展示、Pinia 使用示例 |
+| 详情页 | pages/detail/detail | 详情内容展示                 |
+| 我的   | pages/mine/mine     | 个人中心、菜单列表           |
 
 ## 快速开始
 
@@ -106,8 +106,8 @@ console.log(store.count)
 ```typescript
 import NP from 'number-precision'
 
-NP.plus(0.1, 0.2)    // 0.3
-NP.minus(0.3, 0.1)   // 0.2
+NP.plus(0.1, 0.2) // 0.3
+NP.minus(0.3, 0.1) // 0.2
 NP.times(1.005, 100) // 100.5
 ```
 
@@ -120,11 +120,11 @@ NP.times(1.005, 100) // 100.5
 ```typescript
 const config = {
   development: {
-    apiBaseUrl: 'https://dev-api.example.com'
+    apiBaseUrl: 'https://dev-api.example.com',
   },
   production: {
-    apiBaseUrl: 'https://api.example.com'
-  }
+    apiBaseUrl: 'https://api.example.com',
+  },
 }
 ```
 
@@ -134,13 +134,9 @@ const config = {
 
 ```json
 {
-  "pages": [
-    { "path": "pages/new/new" }
-  ],
+  "pages": [{ "path": "pages/new/new" }],
   "tabBar": {
-    "list": [
-      { "pagePath": "pages/new/new", "text": "新页面" }
-    ]
+    "list": [{ "pagePath": "pages/new/new", "text": "新页面" }]
   }
 }
 ```

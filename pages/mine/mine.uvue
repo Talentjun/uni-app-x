@@ -1,83 +1,82 @@
 <template>
-	<view class="container">
-		<view class="header">
-			<image class="avatar" src="/static/logo.png"></image>
-			<text class="username">用户名称</text>
-		</view>
-		<view class="menu-list">
-			<view class="menu-item">
-				<text class="menu-text">个人信息</text>
-				<text class="menu-arrow">></text>
-			</view>
-			<view class="menu-item">
-				<text class="menu-text">我的收藏</text>
-				<text class="menu-arrow">></text>
-			</view>
-			<view class="menu-item">
-				<text class="menu-text">设置</text>
-				<text class="menu-arrow">></text>
-			</view>
-		</view>
-	</view>
+  <view class="container">
+    <view class="header">
+      <image class="avatar" src="/static/logo.png"></image>
+      <text class="username">用户名称</text>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item">
+        <text class="menu-text">个人信息</text>
+        <text class="menu-arrow">></text>
+      </view>
+      <view class="menu-item">
+        <text class="menu-text">我的收藏</text>
+        <text class="menu-arrow">></text>
+      </view>
+      <view class="menu-item">
+        <text class="menu-text">设置</text>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+  </view>
 </template>
 
-<script setup lang="uts">
-</script>
+<script setup lang="uts"></script>
 
 <style>
-	.container {
-		display: flex;
-		flex-direction: column;
-		background-color: #f5f5f5;
-		min-height: 100vh;
-	}
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
 
-	.header {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: 40px 20px;
-		background-color: #007AFF;
-	}
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  background-color: #007aff;
+}
 
-	.avatar {
-		width: 80px;
-		height: 80px;
-		border-radius: 40px;
-		margin-bottom: 15px;
-	}
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  margin-bottom: 15px;
+}
 
-	.username {
-		font-size: 20px;
-		color: #ffffff;
-		font-weight: bold;
-	}
+.username {
+  font-size: 20px;
+  color: #ffffff;
+  font-weight: bold;
+}
 
-	.menu-list {
-		margin-top: 20px;
-		background-color: #ffffff;
-		border-radius: 10px;
-		margin-left: 15px;
-		margin-right: 15px;
-	}
+.menu-list {
+  margin-top: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  margin-left: 15px;
+  margin-right: 15px;
+}
 
-	.menu-item {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		padding: 18px 20px;
-		border-bottom-width: 1px;
-		border-bottom-color: #eeeeee;
-	}
+.menu-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: #eeeeee;
+}
 
-	.menu-text {
-		font-size: 16px;
-		color: #333333;
-	}
+.menu-text {
+  font-size: 16px;
+  color: #333333;
+}
 
-	.menu-arrow {
-		font-size: 16px;
-		color: #999999;
-	}
+.menu-arrow {
+  font-size: 16px;
+  color: #999999;
+}
 </style>
