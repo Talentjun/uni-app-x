@@ -1,0 +1,123 @@
+<template>
+  <view v-if="visible" class="popup-overlay" @click="close">
+    <view class="popup-content" @click.stop>
+      <view class="popup-header">
+        <text class="popup-title">{{ title }}</text>
+        <text class="popup-close" @click="close">×</text>
+      </view>
+      <text class="popup-body">{{ content }}</text>
+      <view class="popup-footer">
+        <button class="popup-btn" @click="handleClick">查看</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const props = defineProps({
+  title: {
+    type: String,
+    default: '新消息',
+  },
+  content: {
+    type: String,
+    default: '',
+  },
+  payload: {
+    type: Object,
+    default: () => ({}),
+  },
+})
+
+const emit = defineEmits(['close', 'click'])
+
+const visible = ref(false)
+
+// 显示弹窗
+const show = () => {
+  visible.value = true
+}
+
+// 关闭弹窗
+const close = () => {
+  visible.value = false
+  emit('close')
+}
+
+// 处理点击事件
+const handleClick = () => {
+  visible.value = false
+  emit('click', props.payload)
+}
+
+// 暴露方法给父组件
+defineExpose({
+  show,
+  close,
+})
+</script>
+
+<style>
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  width: 80%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.popup-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+  flex: 1;
+}
+
+.popup-close {
+  font-size: 24px;
+  color: #999999;
+  padding: 5px;
+}
+
+.popup-body {
+  font-size: 16px;
+  color: #666666;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.popup-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.popup-btn {
+  background-color: #007aff;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 8px 24px;
+  border-radius: 6px;
+  border: none;
+}
+</style>

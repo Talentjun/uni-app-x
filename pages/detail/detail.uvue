@@ -3,11 +3,11 @@
     <view v-if="loading" class="loading">
       <text>加载中...</text>
     </view>
-    <view v-else-if="article" class="content">
+    <view v-else-if="article !== null" class="content">
       <text class="id">ID: {{ article.id }}</text>
       <text class="userId">用户ID: {{ article.userId }}</text>
-      <text class="title">{{ article.title }}</text>
-      <text class="body">{{ article.body }}</text>
+      <text class="title" user-select>{{ article.title }}</text>
+      <text class="body" user-select>{{ article.body }}</text>
     </view>
     <view v-else class="empty">
       <text>暂无数据</text>
@@ -27,7 +27,7 @@ const fetchData = async (id: number) => {
   try {
     loading.value = true
     const res = await getHomeData()
-    const posts = res || []
+    const posts = res != null ? res : []
     article.value = posts.find((item: any) => item.id === id)
   } catch (error) {
     console.error('获取数据失败:', error)
@@ -40,7 +40,7 @@ const fetchData = async (id: number) => {
 // 页面加载时获取参数并请求数据
 onLoad((options) => {
   const id = options?.id
-  if (id) {
+  if (id != null && id != '') {
     fetchData(Number(id))
   } else {
     loading.value = false

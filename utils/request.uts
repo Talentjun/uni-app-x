@@ -6,7 +6,8 @@ const BASE_URL = getBaseUrl()
 
 // 请求拦截：添加 token
 function getToken(): string {
-  return uni.getStorageSync('token') || ''
+  const token = uni.getStorageSync('token')
+  return token != null ? (token as string) : ''
 }
 
 // 封装 GET 请求
@@ -14,19 +15,20 @@ export function get(url: string, params?: Record<string, any>): Promise<any> {
   return new Promise((resolve, reject) => {
     // 拼接参数
     let fullUrl = BASE_URL + url
-    if (params) {
+    if (params != null) {
       const query = Object.keys(params)
         .map((key) => `${key}=${encodeURIComponent(params[key])}`)
         .join('&')
       fullUrl += '?' + query
     }
 
+    const token = getToken()
     uni.request({
       url: fullUrl,
       method: 'GET',
       header: {
         'Content-Type': 'application/json',
-        Authorization: getToken() ? `Bearer ${getToken()}` : '',
+        Authorization: token != '' ? `Bearer ${token}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200) {
@@ -47,13 +49,14 @@ export function get(url: string, params?: Record<string, any>): Promise<any> {
 // 封装 POST 请求
 export function post(url: string, data?: any): Promise<any> {
   return new Promise((resolve, reject) => {
+    const token = getToken()
     uni.request({
       url: BASE_URL + url,
       method: 'POST',
       data: data,
       header: {
         'Content-Type': 'application/json',
-        Authorization: getToken() ? `Bearer ${getToken()}` : '',
+        Authorization: token != '' ? `Bearer ${token}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200 || res.statusCode === 201) {
@@ -74,13 +77,14 @@ export function post(url: string, data?: any): Promise<any> {
 // 封装 PUT 请求
 export function put(url: string, data?: any): Promise<any> {
   return new Promise((resolve, reject) => {
+    const token = getToken()
     uni.request({
       url: BASE_URL + url,
       method: 'PUT',
       data: data,
       header: {
         'Content-Type': 'application/json',
-        Authorization: getToken() ? `Bearer ${getToken()}` : '',
+        Authorization: token != '' ? `Bearer ${token}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200) {
@@ -102,19 +106,20 @@ export function put(url: string, data?: any): Promise<any> {
 export function del(url: string, params?: Record<string, any>): Promise<any> {
   return new Promise((resolve, reject) => {
     let fullUrl = BASE_URL + url
-    if (params) {
+    if (params != null) {
       const query = Object.keys(params)
         .map((key) => `${key}=${encodeURIComponent(params[key])}`)
         .join('&')
       fullUrl += '?' + query
     }
 
+    const token = getToken()
     uni.request({
       url: fullUrl,
       method: 'DELETE',
       header: {
         'Content-Type': 'application/json',
-        Authorization: getToken() ? `Bearer ${getToken()}` : '',
+        Authorization: token != '' ? `Bearer ${token}` : '',
       },
       success: (res) => {
         if (res.statusCode === 200) {

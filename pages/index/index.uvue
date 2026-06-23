@@ -40,18 +40,89 @@
         <button class="btn" @click="counter.increment()">+</button>
       </view>
     </view>
+
+    <!-- 推送调试面板 -->
+    <view class="push-debug-box">
+      <text class="box-title">推送调试面板</text>
+      <view class="push-info-row">
+        <text class="push-label">平台支持:</text>
+        <text class="push-value">{{ pushSupported ? '是' : '否' }}</text>
+      </view>
+      <view class="push-info-row">
+        <text class="push-label">初始化状态:</text>
+        <text class="push-value">{{ pushInitStatus }}</text>
+      </view>
+      <view class="push-info-row">
+        <text class="push-label">ClientId:</text>
+        <text class="push-value push-cid" @click="copyClientId">{{
+          pushClientId || '未获取'
+        }}</text>
+      </view>
+      <view class="push-log-box">
+        <text class="push-label">推送日志:</text>
+        <scroll-view scroll-y class="push-log-scroll">
+          <text
+            v-for="(log, index) in pushLogs"
+            :key="index"
+            class="push-log-item"
+            >{{ log }}</text
+          >
+          <text v-if="pushLogs.length === 0" class="push-log-item"
+            >暂无日志</text
+          >
+        </scroll-view>
+      </view>
+      <view class="btn-row">
+        <button class="btn push-btn" @click="refreshPushStatus">
+          刷新状态
+        </button>
+        <button class="btn push-btn" @click="clearLogs">清空日志</button>
+        <button class="btn push-btn" @click="retryInitPush">重新初始化</button>
+      </view>
+    </view>
+
+    <!-- 推送消息弹窗 -->
+    <PushPopup
+      ref="popupRef"
+      :title="pushTitle"
+      :content="pushContent"
+      :payload="pushPayload"
+      @click="handlePushClick"
+    />
   </view>
 </template>
 
 <script setup lang="uts">
 import { useCounterStore } from '@/stores/counter'
 import { getHomeData } from '@/utils/home'
+import {
+  initPush,
+  getClientId,
+  onPushMessage,
+  isPushSupported,
+  getPushLogs,
+  getPushStatus,
+  getCachedClientId,
+  clearPushLogs,
+  handlePushClick as navigateByPush,
+} from '@/utils/push'
 import NP from 'number-precision'
+import PushPopup from '@/components/push-popup.uvue'
 
 const title = ref('Hello')
 const counter = useCounterStore()
 const loading = ref(true)
 const posts = ref([])
+
+// 推送相关状态
+const popupRef = ref(null)
+const pushTitle = ref('新消息')
+const pushContent = ref('')
+const pushPayload = ref({})
+const pushSupported = ref(false)
+const pushInitStatus = ref('未初始化')
+const pushClientId = ref('')
+const pushLogs = ref<string[]>([])
 
 // 精度计算示例
 const result1 = ref(NP.plus(0.1, 0.2)) // 0.3（原生会得到 0.30000000000000004）
@@ -64,7 +135,7 @@ const fetchData = async () => {
   try {
     loading.value = true
     const res = await getHomeData()
-    posts.value = res || []
+    posts.value = res != null ? res : []
   } catch (error) {
     console.error('获取数据失败:', error)
   } finally {
@@ -79,9 +150,101 @@ const goToDetail = (id: number) => {
   })
 }
 
+// 处理推送点击
+const handlePushClick = (payload: any) => {
+  navigateByPush(payload)
+}
+
+// 刷新推送状态
+const refreshPushStatus = () => {
+  pushSupported.value = isPushSupported()
+  pushInitStatus.value = getPushStatus()
+  pushClientId.value = getCachedClientId()
+  pushLogs.value = getPushLogs()
+}
+
+// 清空日志
+const clearLogs = () => {
+  clearPushLogs()
+  pushLogs.value = []
+}
+
+// 复制 ClientId
+const copyClientId = () => {
+  if (pushClientId.value) {
+    uni.setClipboardData({
+      data: pushClientId.value,
+      success: () => {
+        uni.showToast({ title: '已复制', icon: 'success' })
+      },
+    })
+  }
+}
+
+// 重新初始化推送
+const retryInitPush = async () => {
+  pushInitStatus.value = '重新初始化中...'
+  pushLogs.value = getPushLogs()
+  try {
+    initPush()
+    const cid = await getClientId()
+    pushClientId.value = cid
+    pushInitStatus.value = getPushStatus()
+    pushLogs.value = getPushLogs()
+  } catch (error) {
+    console.error('重新初始化推送失败:', error)
+    pushInitStatus.value = '初始化失败'
+    pushLogs.value = getPushLogs()
+  }
+}
+
+// 初始化推送服务
+const initPushService = async () => {
+  pushSupported.value = isPushSupported()
+
+  // 非 App 平台跳过 UniPush 初始化
+  if (!isPushSupported()) {
+    pushInitStatus.value = '当前平台不支持 UniPush'
+    pushLogs.value = getPushLogs()
+    return
+  }
+
+  try {
+    // 初始化推送监听
+    initPush()
+
+    // 监听推送消息
+    onPushMessage((message) => {
+      // 更新弹窗内容
+      pushTitle.value = message.title
+      pushContent.value = message.content
+      pushPayload.value = message.payload
+
+      // 显示弹窗
+      if (popupRef.value != null) {
+        popupRef.value.show()
+      }
+
+      // 同步日志到调试面板
+      pushLogs.value = getPushLogs()
+    })
+
+    // 获取 ClientId
+    const cid = await getClientId()
+    pushClientId.value = cid
+  } catch (error) {
+    console.error('初始化推送失败:', error)
+  }
+
+  // 同步状态到调试面板
+  pushInitStatus.value = getPushStatus()
+  pushLogs.value = getPushLogs()
+}
+
 // 页面加载时获取数据
 onMounted(() => {
   fetchData()
+  initPushService()
 })
 </script>
 
@@ -202,5 +365,64 @@ onMounted(() => {
   color: #ffffff;
   border-radius: 5px;
   font-size: 16px;
+}
+
+/* 推送调试面板样式 */
+.push-debug-box {
+  width: 90%;
+  background-color: #fff3cd;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ffc107;
+}
+
+.push-info-row {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 8px;
+}
+
+.push-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #856404;
+  width: 100px;
+}
+
+.push-value {
+  font-size: 14px;
+  color: #856404;
+  flex: 1;
+}
+
+.push-cid {
+  color: #007aff;
+  text-decoration: underline;
+}
+
+.push-log-box {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.push-log-scroll {
+  height: 120px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 8px;
+  margin-top: 8px;
+}
+
+.push-log-item {
+  font-size: 12px;
+  color: #333333;
+  margin-bottom: 4px;
+}
+
+.push-btn {
+  width: 100px;
+  background-color: #ffc107;
+  color: #333333;
 }
 </style>

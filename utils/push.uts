@@ -1,0 +1,191 @@
+/**
+ * 推送服务封装
+ * 使用 UniPush 实现推送功能
+ */
+
+// 推送消息类型定义
+type PushMessage = {
+  title: string
+  content: string
+  payload: any
+}
+
+// 推送消息回调
+type PushCallback = (message: PushMessage) => void
+
+// 存储回调函数
+let onMessageCallback: PushCallback | null = null
+let onClickCallback: PushCallback | null = null
+
+// 推送状态管理
+let pushClientId: string = ''
+let pushInitStatus: string = '未初始化'
+let pushLogs: string[] = []
+
+/**
+ * 获取推送日志列表
+ */
+export function getPushLogs(): string[] {
+  return pushLogs
+}
+
+/**
+ * 获取当前推送状态
+ */
+export function getPushStatus(): string {
+  return pushInitStatus
+}
+
+/**
+ * 获取已缓存的 ClientId
+ */
+export function getCachedClientId(): string {
+  return pushClientId
+}
+
+/**
+ * 添加日志
+ */
+function addLog(msg: string) {
+  const timestamp = new Date().toLocaleTimeString()
+  const log = '[' + timestamp + '] ' + msg
+  console.log(log)
+  pushLogs.push(log)
+  // 最多保留 50 条日志
+  if (pushLogs.length > 50) {
+    pushLogs.shift()
+  }
+}
+
+/**
+ * 清空日志
+ */
+export function clearPushLogs() {
+  pushLogs = []
+}
+
+/**
+ * 判断当前平台是否支持 UniPush
+ * UniPush 仅在 App 端可用，小程序/H5 不支持
+ */
+export function isPushSupported(): boolean {
+  try {
+    const systemInfo = uni.getSystemInfoSync()
+    const platform = systemInfo.platform
+    // 只有 android 和 ios 原生平台支持 UniPush
+    return platform === 'android' || platform === 'ios'
+  } catch (e) {
+    // 如果连 getSystemInfoSync 都不可用，说明不是 App 环境
+    return false
+  }
+}
+
+/**
+ * 初始化推送服务
+ */
+export function initPush() {
+  if (!isPushSupported()) {
+    pushInitStatus = '当前平台不支持 UniPush'
+    addLog('当前平台不支持 UniPush，跳过初始化')
+    return
+  }
+
+  pushInitStatus = '初始化中...'
+  addLog('开始初始化推送服务')
+
+  // 监听推送消息（前台接收）
+  uni.onPushMessage((res: any) => {
+    const title = res.title != null ? res.title : '新消息'
+    const content = res.content != null ? res.content : ''
+    const data =
+      res.data != null ? res.data : res.payload != null ? res.payload : {}
+
+    const message: PushMessage = {
+      title: title as string,
+      content: content as string,
+      payload: data,
+    }
+
+    addLog('收到推送消息: ' + message.title + ' - ' + message.content)
+
+    // 触发消息回调
+    if (onMessageCallback != null) {
+      onMessageCallback(message)
+    }
+  })
+
+  pushInitStatus = '已初始化'
+  addLog('推送监听注册成功')
+}
+
+/**
+ * 获取推送 ClientId
+ */
+export function getClientId(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    uni.getPushClientId({
+      success: (res: any) => {
+        pushClientId = res.cid
+        addLog('获取 ClientId 成功: ' + res.cid)
+        resolve(res.cid)
+      },
+      fail: (err: any) => {
+        addLog('获取 ClientId 失败: ' + err)
+        reject(err)
+      },
+    })
+  })
+}
+
+/**
+ * 设置推送消息回调
+ */
+export function onPushMessage(callback: PushCallback) {
+  onMessageCallback = callback
+}
+
+/**
+ * 设置推送点击回调
+ */
+export function onPushClick(callback: PushCallback) {
+  onClickCallback = callback
+}
+
+/**
+ * 解析推送消息
+ */
+export function parsePushMessage(data: any): PushMessage {
+  const title = data.title != null ? data.title : '新消息'
+  const content = data.content != null ? data.content : ''
+  const payload =
+    data.payload != null ? data.payload : data.data != null ? data.data : {}
+
+  return {
+    title: title as string,
+    content: content as string,
+    payload: payload,
+  }
+}
+
+/**
+ * 处理推送点击跳转
+ */
+export function handlePushClick(payload: any) {
+  if (payload == null) return
+
+  // 根据 payload 中的页面路径进行跳转
+  const page =
+    payload.page != null
+      ? payload.page
+      : payload.url != null
+        ? payload.url
+        : null
+  if (page != null && page != '') {
+    uni.navigateTo({
+      url: page as string,
+      fail: (err: any) => {
+        console.error('跳转失败:', err)
+      },
+    })
+  }
+}

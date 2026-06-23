@@ -42,7 +42,22 @@
   },
   "app-android": {
     "distribute": {
-      "modules": {},
+      "modules": {
+        "Push": {
+          "unipush": {
+            "description": "UniPush 推送服务"
+          }
+        },
+        "uni-push": {
+          "hms": {},
+          "oppo": {},
+          "vivo": {},
+          "xiaomi": {},
+          "meizu": {},
+          "honor": {},
+          "fcm": {}
+        }
+      },
       "icons": {
         "hdpi": "",
         "xhdpi": "",
